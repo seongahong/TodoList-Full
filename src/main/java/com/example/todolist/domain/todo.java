@@ -70,6 +70,39 @@ public class todo {
     // todo 삭제키
     private String delBusinessKey;
 
+    // 생성자
+    /**
+     * AllArgsConsttuctor
+     * @param id
+     * @param todoContent
+     * @param createDateTime
+     * @param updateDateTime
+     * @param completeYn
+     * @param todoBusinessKey
+     * @param delYn
+     * @param delDateTime
+     * @param delBusinessKey
+     */
+    public todo(Long id, String todoContent, LocalDateTime createDateTime, LocalDateTime updateDateTime,
+            Character completeYn, String todoBusinessKey, Character delYn, LocalDateTime delDateTime,
+            String delBusinessKey) {
+        this.id = id;
+        this.todoContent = todoContent;
+        this.createDateTime = createDateTime;
+        this.updateDateTime = updateDateTime;
+        this.completeYn = completeYn;
+        this.todoBusinessKey = todoBusinessKey;
+        this.delYn = delYn;
+        this.delDateTime = delDateTime;
+        this.delBusinessKey = delBusinessKey;
+    }
+
+    // Todo 등록을 위한 생성자 -> TodoDto의 요청 파라미터를 매개변수로 받음.
+    
+
+
+    
+
 
 
     
