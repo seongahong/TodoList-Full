@@ -6,6 +6,9 @@ import org.hibernate.annotations.ColumnDefault;
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
+import com.example.todolist.model.TodoDto;
+import com.google.common.base.Supplier;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -33,7 +36,7 @@ import lombok.NoArgsConstructor;
 @Getter
 @Table(name ="TODO")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class todo {
+public class Todo {
 
     @Id
     @GeneratedValue
@@ -83,7 +86,7 @@ public class todo {
      * @param delDateTime
      * @param delBusinessKey
      */
-    public todo(Long id, String todoContent, LocalDateTime createDateTime, LocalDateTime updateDateTime,
+    public Todo(Long id, String todoContent, LocalDateTime createDateTime, LocalDateTime updateDateTime,
             Character completeYn, String todoBusinessKey, Character delYn, LocalDateTime delDateTime,
             String delBusinessKey) {
         this.id = id;
@@ -98,7 +101,26 @@ public class todo {
     }
 
     // Todo 등록을 위한 생성자 -> TodoDto의 요청 파라미터를 매개변수로 받음.
-    
+    protected Todo(TodoDto.createParam createParam, String todoBusinessKeym) {
+        this.todoContent = createParam.getTodoContent();
+        this.createDateTime = createParam.getCreateDateTime();
+    }
+
+    // Todo 작성을 위한 함수형 인터페이스 supplier
+    public static Supplier<Todo> create(TodoDto.createParam createParam, String todoBusinessKey) {
+        return () -> new Todo(createParam, todoBusinessKey);
+    }
+
+    // Todo 수정
+    public void modify(TodoDto.modifyParam modifyParam) {
+        this.todoContent = modifyParam.getTodoContent();
+        this.todoBusinessKey = modifyParam.getTodoBusinessKey();
+        this.completeYn = modifyParam.getCompleteYn();
+        this.updateDateTime = LocalDateTime.now();
+    }
+
+
+    // Todo 삭제
 
 
     
@@ -108,3 +130,4 @@ public class todo {
     
     
 }
+

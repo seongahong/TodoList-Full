@@ -2,11 +2,11 @@ package com.example.todolist.model;
 
 import java.time.LocalDateTime;
 
-import org.hibernate.validator.constraints.Length;
+import org.springframework.format.annotation.DateTimeFormat;
+import org.springframework.format.annotation.DateTimeFormat.ISO;
 
-import com.example.todolist.domain.todo;
+import com.example.todolist.domain.Todo;
 
-import jakarta.annotation.Nonnull;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.Getter;
 import lombok.Setter;
@@ -34,23 +34,38 @@ public class TodoDto {
         private LocalDateTime createDateTime;
 
         // Todo 완료여부
+        private Character completeYn;
+
+        // Todo 완료여부
         private Character todoCompleteYn;
 
         // 생성자
         public todoList(String todoBusinessKey, String todoContent, LocalDateTime createDateTime,
-                Character todoCompleteYn) {
+                Character completeYn, Character todoCompleteYn) {
             this.todoBusinessKey = todoBusinessKey;
             this.todoContent = todoContent;
             this.createDateTime = createDateTime;
+            this.todoCompleteYn = todoCompleteYn;
             this.todoCompleteYn = todoCompleteYn;
         }
 
     }
 
-    // Todo 목록 파라미터 -> 검색조건이 없는 상태에서 의미가 있을까?
+    // Todo 목록 파라미터 -> 검색조건 
     @Getter
     @Setter
     public static class listParam {
+
+        // todo 내용
+        private String todoContent;
+
+        // todo 날짜 from
+        @DateTimeFormat(iso = ISO.DATE)
+        private LocalDateTime createDateTimeFrom;
+
+        // todo 날짜 to
+        @DateTimeFormat(iso = ISO.DATE)
+        private LocalDateTime createDateTimeTo;
 
     }
 
@@ -80,17 +95,73 @@ public class TodoDto {
 
         // Todo 날짜 
         @NotEmpty
-        private LocalDateTime todoDateTime;
+        private LocalDateTime createDateTime;
         
     }
 
 
     // Todo 수정 반환객체
+    @Getter
+    @Setter
+    public static class modify {
+
+        // Todo 비즈니스키
+        private String todoBusinessKey;
+
+        public modify(String todoBusinessKey) {
+            this.todoBusinessKey = todoBusinessKey;
+        }
+        
+    }
 
 
     // Todo 수정 파라미터
+    @Getter
+    @Setter
+    public static class modifyParam {
+
+        // 비즈니스키
+        @NotEmpty
+        private String todoBusinessKey;
+
+        // todo 내용
+        @NotEmpty
+        private String todoContent;
+
+        // todo 완료여부
+        private Character CompleteYn;
+
+        // todo 작성일
+        @NotEmpty
+        private LocalDateTime createDateTime;
+
+
+    }
 
     // Todo 삭제 반환객체
+    @Getter
+    @Setter
+    public static class remove {
+
+        /// 비즈니스키
+        @NotEmpty
+        private String todoBusinessKey;
+
+        // 삭제여부
+        private Character delYn;
+
+        // 생성자
+        public remove(Todo todo) {
+            this.todoBusinessKey = todo.getTodoBusinessKey();
+            this.delYn = todo.getDelYn();
+        }
+    }
 
     // Todo 삭제 파라미터 
+    public static class removeParam {
+
+        // 비즈니스키
+        @NotEmpty
+        private String todoBusinessKey;
+    }
 }
