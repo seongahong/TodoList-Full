@@ -38,6 +38,6 @@ public interface TodoService {
      * @param removeParam
      * @return
      */
-    // TodoDto.remove remove(TodoDto.removeParam removeParam);
+    TodoDto.remove remove(TodoDto.removeParam removeParam);
     
 }

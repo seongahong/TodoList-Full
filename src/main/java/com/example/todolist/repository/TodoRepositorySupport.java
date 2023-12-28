@@ -10,5 +10,4 @@ import com.querydsl.core.QueryResults;
 public interface TodoRepositorySupport {
     
     // Todo 조회
-    QueryResults<TodoDto.todoList> todoList(TodoDto.listParam listParam);
 }
