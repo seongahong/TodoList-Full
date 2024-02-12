@@ -3,7 +3,10 @@ package com.example.todolist.domain;
 import java.time.LocalDateTime;
 
 import org.hibernate.annotations.ColumnDefault;
+import org.hibernate.annotations.Comment;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import com.example.todolist.model.TodoDto;
@@ -36,49 +39,53 @@ import lombok.NoArgsConstructor;
  * spring.jpa.hibernate.ddl-auto=update
  * DDL을 애플리케이션 실행 시점에 자동으로 생성해줌.
  * JPA의 구현체인 Hibernate는 Entity 코드를 스캔하여 스키마 및 테이블 자동 생성.
+ * 
+ * TODO: 생성자를 public과 protected로 했을 때의 차이점
  */
 
+@Table(name ="TODO")
 @Entity
 @Getter
-@Table(name ="TODO")
+@DynamicInsert
+@DynamicUpdate
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class Todo {
 
     @Id
     @GeneratedValue
-    @Column(name="todoId")
-    // todo 아이디 - primary key로써 쓰임
+    @Comment("아이디")
+    @Column(name = "todoId")
     private Long id;
 
-    // todo 내용
+    @Comment("내용")
     @Lob
+    @Column(name = "todoContent")
     private String todoContent;
 
-    // todo 최초작성일자
+    @Comment("작성일")
     @CreationTimestamp
+    @Column(name = "createDateTime")
     private LocalDateTime createDateTime;
 
-    // todo 최종수정일자
+    @Comment("수정일")
     @UpdateTimestamp
+    @Column(name = "updateDateTime")
     private LocalDateTime updateDateTime;
 
-    // todo 완료여부
+    @Comment("완료여부")
     @ColumnDefault(value = "'N'")
+    @Column(name = "completeYn")
     private Character completeYn = 'N';
 
-    // todo 비즈니스키 -> 필요한가?
-    // private String todoBusinessKey;
-
-    // todo 삭제여부
+    @Comment("삭제여부")
     @ColumnDefault(value = "'N'")
-    private Character delYn = 'N';
+    @Column(name = "delYn")
+    public Character delYn = 'N';
 
-    // todo 삭제일자
+    @Comment("삭제일")
     @CreationTimestamp
+    @Column(name = "delDateTime")
     private LocalDateTime delDateTime;
-
-    // todo 삭제키 -> 필요한가?
-    // private String delBusinessKey;
 
     // 생성자
     /**
@@ -91,7 +98,7 @@ public class Todo {
      * @param delYn
      * @param delDateTime
      */
-    public Todo(Long id, String todoContent, LocalDateTime createDateTime, LocalDateTime updateDateTime,
+    protected Todo(Long id, String todoContent, LocalDateTime createDateTime, LocalDateTime updateDateTime,
             Character completeYn, Character delYn, LocalDateTime delDateTime) {
         this.id = id;
         this.todoContent = todoContent;
@@ -102,18 +109,32 @@ public class Todo {
         this.delDateTime = delDateTime;
     }
 
-    // Todo 등록을 위한 생성자 -> TodoDto의 요청 파라미터를 매개변수로 받음.
-    protected Todo(TodoDto.createParam createParam, String todoBusinessKeym) {
-        this.todoContent = createParam.getTodoContent();
-        this.createDateTime = createParam.getCreateDateTime();
+    /**
+     * Todo 생성
+     * Todo 작성을 위한 함수형 인터페이스 supplier
+     * @param todoContent
+     * @return
+     */
+    protected static Supplier<Todo> createTodo(
+        TodoDto.createParam createParam
+    ) {
+        final Todo todo = new Todo(
+            null, 
+            createParam.getTodoContent(), 
+            LocalDateTime.now(), 
+            null, 
+            'N', 
+            'N', 
+            null
+            );
+
+        return () -> todo;
     }
 
-    // Todo 작성을 위한 함수형 인터페이스 supplier
-    public static Supplier<Todo> create(TodoDto.createParam createParam, String todoBusinessKey) {
-        return () -> new Todo(createParam, todoBusinessKey);
-    }
-
-    // Todo 수정
+    /**
+     * Todo 수정
+     * @param modifyParam
+     */
     public void modify(TodoDto.modifyParam modifyParam) {
         this.todoContent = modifyParam.getTodoContent();
         this.completeYn = modifyParam.getCompleteYn();
@@ -121,7 +142,10 @@ public class Todo {
     }
 
 
-    // Todo 삭제
+    /**
+     * Todo 삭제
+     * @param removeParam
+     */
     public void remove(TodoDto.removeParam removeParam) {
         this.id = removeParam.getId();
     }

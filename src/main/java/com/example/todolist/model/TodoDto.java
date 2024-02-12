@@ -97,8 +97,8 @@ public class TodoDto {
         private String todoContent;
 
         // Todo 날짜 
-        @NotEmpty
-        private LocalDateTime createDateTime;
+        // @NotEmpty
+        // private LocalDateTime createDateTime;
         
     }
 
@@ -139,8 +139,8 @@ public class TodoDto {
         private Character CompleteYn;
 
         // todo 작성일
-        @NotEmpty
-        private LocalDateTime createDateTime;
+        // @NotEmpty
+        // private LocalDateTime createDateTime;
 
 
     }

@@ -23,7 +23,16 @@ public interface TodoService {
      * @param createParam
      * @return
      */
+    // 1) void
+    // - 데이터를 생성한 뒤, 반환하지 않는 경우 사용.
+    // - 성공과 실패에 대한 반환은 예외처리를 통해 처리.
+    // void create(TodoDto.createParam createParam);
+
+    // 2) TodoDto.create
+    // - 데이터를 생성한 뒤, 생선된 Todo 객채를 반환함.
+    // - 생성 후, 클라이언트에게 생성된 Todo에 대한 정보를 제공하는 데 유용할 수 있음.
     TodoDto.create create(TodoDto.createParam createParam);
+
 
 
     /**
